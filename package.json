@@ -1,0 +1,16 @@
+{
+  "name": "playwright-freecrm",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ci": "npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1 --grep \"Test Case [1-5]\"",
+    "test:headed": "npx playwright test --headed",
+    "test:ui": "npx playwright test --ui",
+    "test:setup": "npx playwright test --project=setup",
+    "summarize": "node scripts/summarize-results.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}
