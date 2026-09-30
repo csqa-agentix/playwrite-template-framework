@@ -1,6 +1,7 @@
-const { devices } = require('@playwright/test');
-/** @type {import('@playwright/test').PlaywrightTestConfig} */
-module.exports = {
+import { defineConfig, devices } from '@playwright/test';
+import testData from './test-data/freecrm.json';
+
+export default defineConfig({
   testDir: './tests/e2e',
   timeout: 60_000,
   expect: { timeout: 5000 },
@@ -11,9 +12,10 @@ module.exports = {
     ['list'],
     ['html', { open: 'never' }],
     ['json', { outputFile: 'test-results/results.json' }],
+    ['allure-playwright', { resultsDir: 'allure-results' }],
   ],
   use: {
-    baseURL: 'https://ui.freecrm.com',
+    baseURL: process.env.FREECRM_BASE_URL || testData.baseUrl,
     headless: Boolean(process.env.CI),
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
@@ -22,4 +24,4 @@ module.exports = {
     navigationTimeout: 120_000,
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
-};
+});

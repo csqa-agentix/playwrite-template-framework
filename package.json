@@ -4,13 +4,20 @@
   "private": true,
   "scripts": {
     "test": "npx playwright test",
-    "test:ci": "npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1 --grep \"Test Case [1-5]\"",
+    "test:ci": "npx playwright test tests/e2e/freecrm.spec.ts --project=chromium --workers=1",
     "test:headed": "npx playwright test --headed",
     "test:ui": "npx playwright test --ui",
-    "test:setup": "npx playwright test --project=setup",
-    "summarize": "node scripts/summarize-results.js"
+    "typecheck": "tsc --noEmit",
+    "summarize": "tsx scripts/summarize-results.ts",
+    "allure:generate": "npx allure generate ./allure-results",
+    "allure:open": "npx allure open ./allure-report"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0"
+    "@playwright/test": "^1.40.0",
+    "@types/node": "^26.6.3",
+    "allure": "^3.19.1",
+    "allure-playwright": "^3.13.0",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
   }
 }

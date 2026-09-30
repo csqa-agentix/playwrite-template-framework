@@ -1,83 +1,76 @@
 # Playwright FreeCRM Tests
 
-Playwright JavaScript framework using Page Object Model to test the FreeCRM application:
+Playwright TypeScript tests for the FreeCRM application, organized with a Page Object Manager and JSON-driven test data:
 
 <https://ui.freecrm.com/login>
 
-The browser runs in headed mode locally and headless mode in CI. The CI pipeline runs the five functional tests so the workflow remains green; the other 15 tests are intentional failure demonstrations.
+The browser runs in headed mode locally and headless mode in CI. The suite contains five functional tests covering login, logo visibility, contact creation, company creation, and logout.
 
 ## Project Structure
 
 ```text
 pages/
-	freecrm.login.page.js    Login, logo, and logout page actions
-tests/e2e/
-	freecrm.spec.js          20 FreeCRM test cases
-playwright.config.js       Playwright configuration
-.github/workflows/
-	playwright.yml            GitHub Actions CI pipeline
+  freecrm.login.page.ts       Login, logo, and logout actions
+  freecrm.contacts.page.ts    Contact creation actions
+  freecrm.companies.page.ts   Company creation actions
+  freecrm.page.manager.ts     Page object manager
+tests/
+  e2e/freecrm.spec.ts         Five FreeCRM functional tests
+  fixtures/freecrm.fixture.ts Page manager fixture
+test-data/freecrm.json        Base URL, paths, credentials, and form data
+scripts/summarize-results.ts  Test result summary utility
+playwright.config.ts          Playwright and reporter configuration
+tsconfig.json                 TypeScript compiler configuration
+.github/workflows/playwright.yml  GitHub Actions CI pipeline
 ```
 
 ## Test Coverage
 
-`freecrm.spec.js` contains 20 tests:
+`freecrm.spec.ts` contains five tests:
 
-- 5 passing functional tests: login, logo, add contact, add company, and logout
-- 5 intentional locator-not-found failures
-- 5 intentional wait-timeout failures
-- 5 intentional application-behavior/assertion failures
+- Login with valid credentials
+- Login-page logo visibility
+- Contact creation
+- Company creation
+- Logout
 
-The passing tests are expected to pass. The complete suite is intentionally expected to exit with code `1` because 15 tests are designed to fail.
+## Test Data
 
-## Credentials
-
-The default test credentials are:
-
-```text
-Email: csqa@yopmail.com
-Password: Admin@123123
-```
-
-Credentials can be overridden without changing source code:
+Default credentials, application paths, and contact/company inputs are stored in `test-data/freecrm.json`. Credentials can be overridden without changing source code:
 
 ```powershell
 $env:FREECRM_EMAIL = 'your-email@example.com'
 $env:FREECRM_PASSWORD = 'your-password'
+$env:FREECRM_BASE_URL = 'https://ui.freecrm.com'
 ```
+
+Contact and company names receive a timestamp suffix during a run to avoid collisions with existing records.
 
 ## Installation
 
 ```powershell
 npm install
-npx playwright install
+npx playwright install chromium
 ```
 
 ## Run Tests
 
-Run the complete suite in headed Chromium:
+Run all five tests in headed Chromium:
 
 ```powershell
-npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1
+npx playwright test tests/e2e/freecrm.spec.ts --project=chromium --workers=1
 ```
 
-Run only the five passing functional tests:
+Run only the five functional tests:
 
 ```powershell
-npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1 --grep "Test Case [1-5]"
-```
-
-Run the intentional failure groups:
-
-```powershell
-npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1 --grep "Locator failure"
-npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1 --grep "Wait failure"
-npx playwright test tests/e2e/freecrm.spec.js --project=chromium --workers=1 --grep "Knowledge failure"
+npx playwright test tests/e2e/freecrm.spec.ts --project=chromium --workers=1 --grep "Test Case [1-5]"
 ```
 
 Run with the npm script:
 
 ```powershell
-npm test -- tests/e2e/freecrm.spec.js --project=chromium --workers=1
+npm test -- tests/e2e/freecrm.spec.ts --project=chromium --workers=1
 ```
 
 Run the CI-safe functional test set locally:
@@ -86,9 +79,15 @@ Run the CI-safe functional test set locally:
 npm run test:ci
 ```
 
-## CI/CD Pipeline
+Type-check the framework:
 
-GitHub Actions is configured in `.github/workflows/playwright.yml`. It runs on pushes and pull requests targeting `main` or `master`, installs Chromium, runs the five functional tests, and uploads the HTML report and test artifacts.
+```powershell
+npm run typecheck
+```
+
+## Continuous Integration
+
+GitHub Actions runs on pushes and pull requests targeting `main` or `master`. It installs Chromium, runs the five functional tests, and uploads the Playwright HTML report and test results as workflow artifacts. The CI job requires these repository secrets under **Settings > Secrets and variables > Actions**:
 
 Add these repository secrets under **Settings > Secrets and variables > Actions**:
 
@@ -97,14 +96,21 @@ FREECRM_EMAIL
 FREECRM_PASSWORD
 ```
 
-The workflow uses Node.js 20 and `npm ci`, so `package-lock.json` must remain committed.
+The workflow uses Node.js 20 and `npm ci`, so keep `package-lock.json` committed. Allure files are generated locally by the commands below; the current workflow does not upload an Allure report.
 
 ## Reports
 
-After a run, open the HTML report with:
+The Playwright HTML report can be opened with:
 
 ```powershell
 npx playwright show-report
 ```
 
-Test artifacts such as screenshots, videos, traces, and JSON results are stored under `test-results/` and `playwright-report/`.
+Allure Playwright results are written to `allure-results/`. After running tests, generate and open the Allure Report 3 HTML report with:
+
+```powershell
+npm run allure:generate
+npm run allure:open
+```
+
+The report is generated in `allure-report/`. The Playwright HTML report is generated in `playwright-report/`; screenshots, videos, traces, and JSON results are stored in `test-results/`.

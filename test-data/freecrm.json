@@ -1,0 +1,19 @@
+{
+  "baseUrl": "https://ui.freecrm.com",
+  "paths": {
+    "login": "/login",
+    "contacts": "/contacts",
+    "companies": "/companies"
+  },
+  "credentials": {
+    "email": "csqa@yopmail.com",
+    "password": "Admin@123123"
+  },
+  "contact": {
+    "firstNamePrefix": "Test",
+    "lastName": "Contact"
+  },
+  "company": {
+    "namePrefix": "Test Company"
+  }
+}
