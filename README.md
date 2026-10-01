@@ -89,8 +89,6 @@ npm run typecheck
 
 GitHub Actions runs on pushes and pull requests targeting `main` or `master`. It installs Chromium, runs the five functional tests, and uploads the Playwright HTML report and test results as workflow artifacts. The CI job requires these repository secrets under **Settings > Secrets and variables > Actions**:
 
-Add these repository secrets under **Settings > Secrets and variables > Actions**:
-
 ```text
 FREECRM_EMAIL
 FREECRM_PASSWORD
