@@ -39,8 +39,8 @@ tsconfig.json                 TypeScript compiler configuration
 Default credentials, application paths, and contact/company inputs are stored in `test-data/freecrm.json`. Credentials can be overridden without changing source code:
 
 ```powershell
-$env:FREECRM_EMAIL = 'your-email@example.com'
-$env:FREECRM_PASSWORD = 'your-password'
+$env:FREECRM_EMAIL = 'csqa@yopmail.com'
+$env:FREECRM_PASSWORD = 'Admin@123123'
 $env:FREECRM_BASE_URL = 'https://ui.freecrm.com'
 ```
 
